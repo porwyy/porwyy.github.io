@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="keywords" content>
+  <meta name="description" content>
+  <meta http-equiv="x-dns-prefetch-control" content="on">
+  <link rel="dns-prefetch" href="https://busuanzi.ibruce.info">
+  
+  <link rel="dns-prefetch" href="https://widget.daovoice.io">
+  <link rel="dns-prefetch" href="https://widget-static-cdn.daovoice.io">
+  <link rel="dns-prefetch" href="https://im.daovoice.io">
+  
+  
+  <link rel="dns-prefetch" href="https://hm.baidu.com/">
+  
+  
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+  <link rel="dns-prefetch" href="https://api.github.com">
+  <link rel="dns-prefetch" href="https://avatars3.githubusercontent.com">
+  
+  <link rel="stylesheet" type="text/css" href="/./style/main.d9e3dd.css">
+	<link rel="shortcut icon" href="/favicon.ico" title="Favicon">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+	<title>git学习笔记</title>
+  
+  <script>var _hmt=_hmt||[];(function(){var hm=document.createElement("script");hm.src="https://hm.baidu.com/hm.js?awwssw1snsnsnn1ndndnndnd99j";var s=document.getElementsByTagName("script")[0];s.parentNode.insertBefore(hm,s);})();
+  </script>
+  
+  
+    <script>(function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/123456.js","daovoice");daovoice('init',{app_id: "123456"});daovoice('update');
+  </script>
+  
+</head>
+<body>
+<canvas id="pattern-placeholder" height="230"></canvas>
+<div class="navbar-header">
+  <a class="blog-title" href="/">wyy&#39;s blog</a>
+  <a class="face-img" href="/">
+    <img src="/./img/a.jpg">
+  </a>
+</div>
+<main>
+  <div class="article-title">
+    
+  
+  <h1 class="title">
+    git学习笔记
+  </h1>
+  
+
+
+    <ul class="article-info">
+      <li>
+        发布
+        <time datetime="2019-04-24T10:28:04.000Z" itemprop="datePublished">2019-04-24</time>
+      </li>
+      <li>
+        
+    更新 <time datetime="2019-04-24T10:29:36.636Z" itemprop="dateUpdated">2019-04-24</time>
+
+      </li>
+      <li id="busuanzi_container_page_pv">
+        阅读 <span id="busuanzi_value_page_pv"></span>
+      </li>
+    </ul>
+  </div>
+  <div class="container">
+    <div class="article">
+      <div class="content">
+        
+        <h3 id="提交新文件"><a href="#提交新文件" class="headerlink" title="提交新文件"></a>提交新文件</h3><pre><code>git add text.txt /*将文件放在暂存区*/
+git commit -m&quot;my add file&quot; /*将暂存区的文件一次性提交到分支*/
+git push
+</code></pre><h3 id="提交修改过的文件"><a href="#提交修改过的文件" class="headerlink" title="提交修改过的文件"></a>提交修改过的文件</h3><pre><code>git status /*查看现在库的状态*/
+git difftext.txt  /*若已知现在库里 text.txt 被改动，可用来查找改动的信息*/
+git add text.txt
+git commit -m&quot;my changed file&quot;
+</code></pre><h3 id="版本退回"><a href="#版本退回" class="headerlink" title="版本退回"></a>版本退回</h3><pre><code>1、往后退
+    1）查看版本号：
+        git log; 
+        git log pretty=online;
+        /*查看该版本以及该版本之前的版本号*、
+    2）版本退回
+        git reset --hard HEAD^ /*退回到前一个版本*/
+
+    3）版本确认
+        cat text.txt /*可查看现在版本的某个文件来确定是否是要找版本*/
+
+    4）把修改推送到远程服务器
+        git push -f -u origin master
+
+    #注意#
+        此时 git long 将不能找到退回前的版本，若想向前退，请查看2.
+2、向前退
+    1）若能查到退回前那个commit版本的id（即命令框未清空）
+        git reset --hard 3628164 /*那一串数字为版本号（只要id的一部分即可）*/
+    2)已经找不到版本号了
+        git refolg /*可查找之前的每次commit操作的id*/
+</code></pre><h3 id="撤销修改"><a href="#撤销修改" class="headerlink" title="撤销修改"></a>撤销修改</h3><pre><code>1、工作区错误修改未提交到缓存区
+    git status /*查看库状态，发现文件已被修改，还未add*/
+    git checkout -- readme.txt  /*撤销文件里所有修改*/
+
+2、暂存区错误修改未提交到分支
+    git status /*查看库状态，发现暂存区文件被错误修改*/
+    git checkout -- readme.txt /*撤销文件到刚提交到暂存区时的状态*/
+
+3、工作区错误修改并提交到暂存区
+    git status /*发现有错误修改*/
+    git reset HEAD readme.txt /*暂存区的修改删掉，并重新放回工作区*/
+    返回1
+
+4、错误的修改提交到分支
+    版本回退
+</code></pre><h3 id="删除文件"><a href="#删除文件" class="headerlink" title="删除文件"></a>删除文件</h3><pre><code>1) rm text.txt /*将文件从工作区中删除*/
+2) 从版本库中删除文件
+    git rm text.txt
+    git commit -m&quot;remove text.txt&quot;
+
+3) 若第一步错误的删除了文件，想找回已删除文件
+    git checkout -- test.txt
+</code></pre><h3 id="删除文件夹"><a href="#删除文件夹" class="headerlink" title="删除文件夹"></a>删除文件夹</h3><pre><code>git rm -r --cached file  /* --cached不会将本地文件夹删除 */
+git commit -m&quot;delete file&quot;
+git push
+</code></pre><h3 id="移动文件"><a href="#移动文件" class="headerlink" title="移动文件"></a>移动文件</h3><pre><code>git mv README.txt README
+
+相当于
+    mv README.txt README
+    git rm README.txt
+    git add README
+</code></pre><h3 id="添加远程库"><a href="#添加远程库" class="headerlink" title="添加远程库"></a>添加远程库</h3><pre><code>1、将本地库于远程库相关联
+    git remote add origin ....
+
+2、将本地库的内容提交到远程库上
+    git push -u origin master  /*第一次提交*/
+    git push origin master  /*以后每次修改后提交*/
+</code></pre><h3 id="从远程库克隆"><a href="#从远程库克隆" class="headerlink" title="从远程库克隆"></a>从远程库克隆</h3><pre><code>git clone ....
+</code></pre><h3 id="添加于分支合并"><a href="#添加于分支合并" class="headerlink" title="添加于分支合并"></a>添加于分支合并</h3><pre><code>1、添加并切换分支
+    1） git checkout -b dev
+    2)  git branch dev
+        git checkout dev
+
+2、在切换后的分支上做正常的文件提交工作
+
+3、切换回主分支
+    git checkout master
+
+4、将dev分支合并到主分支上
+    git merge dev
+    /*若这时出现冲突，则需手动改写冲突部分的代码，再重新提交*/
+
+5、删除多余的dev分支
+    git branch -d dev
+
+6、查看现有分支
+    git branch
+    //其中带*的为当前分支
+</code></pre>
+      </div>
+        <div class="support-author">
+          <p>感谢您的阅读。 🙏
+          </p>
+        </div>
+        <!--
+            <div class="like ">
+              <div class="like-button">
+                <a id="like-note" href="">
+                  <i class="icon-heart"></i>喜欢
+                </a>
+              </div>
+              <span id="likes-count">256</span>
+            </div>
+        -->
+        <div class="otherLink">
+          <div class="previous">
+          </div>
+          <div class="next">
+          </div>
+        </div>
+        <div class="comments" id="comments">
+          
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script type="text/javascript">
+  const gitalk = new Gitalk({
+    clientID: '8888a8888',
+    clientSecret: '8888886666666',
+    repo: 'xxxx.github.io',
+    owner: 'admin',
+    admin: ['admin'],
+    id: location.pathname,      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false
+  })
+
+  gitalk.render('comments');
+</script>
+
+
+        </div>
+      </div>
+    </div>
+   
+</main>
+<div class="footer">
+  <div class="info">
+    <p>
+    <a href="https://hexo.io"> Hexo </a> 强力驱动 |
+      <a href="https://github.com/Youthink/hexo-themes-yearn"> Yearn </a>
+      主题
+    </p>
+    <p>&copy;2013-2018 </p>
+  </div>
+</div>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<script>//console
+  var consoleConfig = ''.split(',');
+  var canConsole = true;
+  var consoleInfo = (function(consoleConfig) {
+  if (!canConsole || !consoleConfig || consoleConfig.length < 1) {
+    return;
+  }
+  var consoleColor = '#6190e8';
+  var _console;
+  var backgroundTextStyle = 'padding: 1px 5px;color: #fff;background: ' + consoleColor + ';'
+  var textStyle = 'color: ' + consoleColor + ';';
+
+  consoleConfig.map(o => {
+    var num = (o.match(/%c/g) || []).length;
+    if(/^http(s)?:\/\//.test(o)) {
+      console.log('%c     ', 'background: url(' + o + ') no-repeat left center;font-size: 180px;');
+      return;
+    }
+    if (num > 0) {
+      var logArguments = [];
+      for (var i = 0; i < num; i++) {
+        if (i % 2 === 0) {
+          logArguments.push(backgroundTextStyle);
+        } else {
+          logArguments.push(textStyle);
+        }
+      }
+      (_console = console).log.apply(_console, ['%c' + o, textStyle].concat(logArguments));
+      return;
+    }
+    console.log('%c' + o, textStyle);
+  });
+}(consoleConfig));</script><script type="text/javascript" src="/./js/main.d9e3dd.js"></script>
+
+</body>
+</html>

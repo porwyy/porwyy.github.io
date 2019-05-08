@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="keywords" content>
+  <meta name="description" content>
+  <meta http-equiv="x-dns-prefetch-control" content="on">
+  <link rel="dns-prefetch" href="https://busuanzi.ibruce.info">
+  
+  <link rel="dns-prefetch" href="https://widget.daovoice.io">
+  <link rel="dns-prefetch" href="https://widget-static-cdn.daovoice.io">
+  <link rel="dns-prefetch" href="https://im.daovoice.io">
+  
+  
+  <link rel="dns-prefetch" href="https://hm.baidu.com/">
+  
+  
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+  <link rel="dns-prefetch" href="https://api.github.com">
+  <link rel="dns-prefetch" href="https://avatars3.githubusercontent.com">
+  
+  <link rel="stylesheet" type="text/css" href="/./style/main.d9e3dd.css">
+	<link rel="shortcut icon" href="/favicon.ico" title="Favicon">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+	<title>mysql工作模式</title>
+  
+  <script>var _hmt=_hmt||[];(function(){var hm=document.createElement("script");hm.src="https://hm.baidu.com/hm.js?awwssw1snsnsnn1ndndnndnd99j";var s=document.getElementsByTagName("script")[0];s.parentNode.insertBefore(hm,s);})();
+  </script>
+  
+  
+    <script>(function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/123456.js","daovoice");daovoice('init',{app_id: "123456"});daovoice('update');
+  </script>
+  
+</head>
+<body>
+<canvas id="pattern-placeholder" height="230"></canvas>
+<div class="navbar-header">
+  <a class="blog-title" href="/">wyy&#39;s blog</a>
+  <a class="face-img" href="/">
+    <img src="/./img/a.jpg">
+  </a>
+</div>
+<main>
+  <div class="article-title">
+    
+  
+  <h1 class="title">
+    mysql工作模式
+  </h1>
+  
+
+
+    <ul class="article-info">
+      <li>
+        发布
+        <time datetime="2019-05-08T10:04:09.000Z" itemprop="datePublished">2019-05-08</time>
+      </li>
+      <li>
+        
+    更新 <time datetime="2019-05-08T10:09:09.915Z" itemprop="dateUpdated">2019-05-08</time>
+
+      </li>
+      <li id="busuanzi_container_page_pv">
+        阅读 <span id="busuanzi_value_page_pv"></span>
+      </li>
+    </ul>
+  </div>
+  <div class="container">
+    <div class="article">
+      <div class="content">
+        
+        <h1 id="MySQL的工作模式"><a href="#MySQL的工作模式" class="headerlink" title="MySQL的工作模式"></a>MySQL的工作模式</h1><h2 id="最简单的mysql模式："><a href="#最简单的mysql模式：" class="headerlink" title="最简单的mysql模式："></a>最简单的mysql模式：</h2><p>APP -&gt; DAL -&gt; MYSQL INSTANCE</p>
+<p><strong>问题：</strong></p>
+<ul>
+<li>数据的总量大</li>
+<li>索引大</li>
+<li>读写混合，一个实例没法承受</li>
+</ul>
+<h2 id="引入缓存技术"><a href="#引入缓存技术" class="headerlink" title="引入缓存技术"></a>引入缓存技术</h2><p><strong>改进模式后：缓存 + MySQL + 垂直拆分</strong> </p>
+<p>APP -&gt; DAL -&gt; CACHE -&gt; 多个mysql instance </p>
+<h2 id="引入主从模式"><a href="#引入主从模式" class="headerlink" title="引入主从模式"></a>引入主从模式</h2><p><strong>改进模式后：读写分离，主从复制</strong></p>
+<p>写的操作放在主库，读的操作放在从库，避免服务器出现性能瓶颈。</p>
+<p><img src="./img1.png" alt="主从分离模式图"></p>
+<p>主服务器master记录数据库操作日志到Binary log，从服务器开启i/o线程将二进制日志记录的操作同步到relay log（存在从服务器的缓存中），另外sql线程将relay log日志记录的操作在从服务器执行。 </p>
+<p>整个复制过程实际上就是 Slave 从 Master 端获取该日志然后再在自己身上完全顺序的执行日志中所记录的各种操作。 </p>
+<p>MySQL 复制的基本过程如下：<br>　　1. Slave 上面的IO线程连接上 Master，并请求从指定日志文件的指定位置(或者从最开始的日志)之后的日志内容;<br>　 　2. Master 接收到来自 Slave 的 IO 线程的请求后，通过负责复制的 IO 线程根据请求信息读取指定日志指定位置之后的日志信息，返回给 Slave 端的 IO 线程。返回信息中除了日志所包含的信息之外，还包括本次返回的信息在 Master 端的 Binary Log 文件的名称以及在 Binary Log 中的位置;</p>
+<p><strong>优点：</strong></p>
+<ul>
+<li>主服务器进行写操作时，不影响查询应用服务器的查询性能，降低阻塞，提高并发；</li>
+<li>数据拥有多个容灾副本，提高数据安全性</li>
+</ul>
+<p><strong>存在的问题：</strong></p>
+<ul>
+<li>主从间的数据库不是实时同步，就算网络连接正常，也存在瞬间，主从数据不一致。 </li>
+<li>如果主从的网络断开，从会在网络正常后，批量同步。 </li>
+<li>如果对从进行修改数据，那么很可能从在执行主的bin-log时出现错误而停止同步，这个是很危险的操作。所以一般情况下，非常小心的修改从上的数据。 </li>
+<li>一个衍生的配置是双主，互为主从配置，只要双方的修改不冲突，可以工作良好。 </li>
+<li>如果需要多主的话，可以用环形配置，这样任意一个节点的修改都可以同步到所有节点。</li>
+</ul>
+<h2 id="引入分库分表技术："><a href="#引入分库分表技术：" class="headerlink" title="引入分库分表技术："></a>引入分库分表技术：</h2><p><strong>改进后模式：分表分库 + 水平拆分 + MySQL集群</strong></p>
+<p><strong>分表分库：</strong><br>分表是将一个大表按照一定的规则分解成多张具有独立存储空间的实体表，我们可以称为子表，每个表都对应三个文件，MYD数据文件，.MYI索引文件，.frm表结构文件。</p>
+<p>这些子表可以分布在同一或不同数据库，同一磁盘，或者不同的机器上。读写的时候根据事先定义好的规则得到对应的子表名，然后去操作它。</p>
+<p><strong>水平拆分（分区）：</strong><br>将大表分解为若干个独立的实体表，而分区是将数据分段划分在多个位置存放，可是是同一数据库或不同图书角，同一块磁盘或不同的机器。</p>
+<p>分区后，表面上还是一张表，但数据散列到多个位置了。读写的时候操作的还是大表名字，db自动去组织分区的数据。</p>
+
+      </div>
+        <div class="support-author">
+          <p>感谢您的阅读。 🙏
+          </p>
+        </div>
+        <!--
+            <div class="like ">
+              <div class="like-button">
+                <a id="like-note" href="">
+                  <i class="icon-heart"></i>喜欢
+                </a>
+              </div>
+              <span id="likes-count">256</span>
+            </div>
+        -->
+        <div class="otherLink">
+          <div class="previous">
+          </div>
+          <div class="next">
+          </div>
+        </div>
+        <div class="comments" id="comments">
+          
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script type="text/javascript">
+  const gitalk = new Gitalk({
+    clientID: '8888a8888',
+    clientSecret: '8888886666666',
+    repo: 'xxxx.github.io',
+    owner: 'admin',
+    admin: ['admin'],
+    id: location.pathname,      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false
+  })
+
+  gitalk.render('comments');
+</script>
+
+
+        </div>
+      </div>
+    </div>
+   
+</main>
+<div class="footer">
+  <div class="info">
+    <p>
+    <a href="https://hexo.io"> Hexo </a> 强力驱动 |
+      <a href="https://github.com/Youthink/hexo-themes-yearn"> Yearn </a>
+      主题
+    </p>
+    <p>&copy;2013-2018 </p>
+  </div>
+</div>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<script>//console
+  var consoleConfig = ''.split(',');
+  var canConsole = true;
+  var consoleInfo = (function(consoleConfig) {
+  if (!canConsole || !consoleConfig || consoleConfig.length < 1) {
+    return;
+  }
+  var consoleColor = '#6190e8';
+  var _console;
+  var backgroundTextStyle = 'padding: 1px 5px;color: #fff;background: ' + consoleColor + ';'
+  var textStyle = 'color: ' + consoleColor + ';';
+
+  consoleConfig.map(o => {
+    var num = (o.match(/%c/g) || []).length;
+    if(/^http(s)?:\/\//.test(o)) {
+      console.log('%c     ', 'background: url(' + o + ') no-repeat left center;font-size: 180px;');
+      return;
+    }
+    if (num > 0) {
+      var logArguments = [];
+      for (var i = 0; i < num; i++) {
+        if (i % 2 === 0) {
+          logArguments.push(backgroundTextStyle);
+        } else {
+          logArguments.push(textStyle);
+        }
+      }
+      (_console = console).log.apply(_console, ['%c' + o, textStyle].concat(logArguments));
+      return;
+    }
+    console.log('%c' + o, textStyle);
+  });
+}(consoleConfig));</script><script type="text/javascript" src="/./js/main.d9e3dd.js"></script>
+
+</body>
+</html>
