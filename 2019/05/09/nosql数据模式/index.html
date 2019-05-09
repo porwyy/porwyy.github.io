@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <meta name="keywords" content>
+  <meta name="description" content>
+  <meta http-equiv="x-dns-prefetch-control" content="on">
+  <link rel="dns-prefetch" href="https://busuanzi.ibruce.info">
+  
+  <link rel="dns-prefetch" href="https://widget.daovoice.io">
+  <link rel="dns-prefetch" href="https://widget-static-cdn.daovoice.io">
+  <link rel="dns-prefetch" href="https://im.daovoice.io">
+  
+  
+  <link rel="dns-prefetch" href="https://hm.baidu.com/">
+  
+  
+  <link rel="dns-prefetch" href="https://cdn.jsdelivr.net">
+  <link rel="dns-prefetch" href="https://api.github.com">
+  <link rel="dns-prefetch" href="https://avatars3.githubusercontent.com">
+  
+  <link rel="stylesheet" type="text/css" href="/./style/main.d9e3dd.css">
+	<link rel="shortcut icon" href="/favicon.ico" title="Favicon">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
+	<title>nosql数据模式</title>
+  
+  <script>var _hmt=_hmt||[];(function(){var hm=document.createElement("script");hm.src="https://hm.baidu.com/hm.js?awwssw1snsnsnn1ndndnndnd99j";var s=document.getElementsByTagName("script")[0];s.parentNode.insertBefore(hm,s);})();
+  </script>
+  
+  
+    <script>(function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/123456.js","daovoice");daovoice('init',{app_id: "123456"});daovoice('update');
+  </script>
+  
+</head>
+<body>
+<canvas id="pattern-placeholder" height="230"></canvas>
+<div class="navbar-header">
+  <a class="blog-title" href="/">wyy&#39;s blog</a>
+  <a class="face-img" href="/">
+    <img src="/./img/a.jpg">
+  </a>
+</div>
+<main>
+  <div class="article-title">
+    
+  
+  <h1 class="title">
+    nosql数据模式
+  </h1>
+  
+
+
+    <ul class="article-info">
+      <li>
+        发布
+        <time datetime="2019-05-09T14:09:46.000Z" itemprop="datePublished">2019-05-09</time>
+      </li>
+      <li>
+        
+    更新 <time datetime="2019-05-09T14:25:48.694Z" itemprop="dateUpdated">2019-05-09</time>
+
+      </li>
+      <li id="busuanzi_container_page_pv">
+        阅读 <span id="busuanzi_value_page_pv"></span>
+      </li>
+    </ul>
+  </div>
+  <div class="container">
+    <div class="article">
+      <div class="content">
+        
+        <h1 id="传统的关系型数据库的数据模型"><a href="#传统的关系型数据库的数据模型" class="headerlink" title="传统的关系型数据库的数据模型"></a>传统的关系型数据库的数据模型</h1><p><strong>特点：</strong>一种关系对应一张表，一张表有若干行，每行表示一个元祖。其中每个元祖由一系列值组成，每个值表示一个属性。</p>
+<h1 id="nosql的数据模型"><a href="#nosql的数据模型" class="headerlink" title="nosql的数据模型"></a>nosql的数据模型</h1><p><strong>特点：</strong>nosql抛弃了传统的关系数据模型，而采用聚合模型。</p>
+<p><strong>聚合模型：</strong>将一组相关联的对象视为一个整体单元来操作。</p>
+<p><em>以购物网站为例，</em>我们需要管理用户信息、商品信息、收货地址信息、订单信息、付款方式等。我们现在分别给出基于关系模式和聚合模式的解决方案。</p>
+<p><em>1、用关系模式：</em></p>
+<pre><code>可以将其划分为用户表、订单表、商品表、付款方式表等，表与表之间存在某种关系。
+</code></pre><p><em>2、用聚合模式：</em></p>
+<pre><code>方法一：做两个聚合。一个聚合是用户，由用户基本信息和收货地址信息等组成；一个聚合是订单，由商品列表、付款方式等信息组成；
+
+方法二：将用户下面的所有订单全部都放到用户聚合中。
+</code></pre><p>如何聚合取决于你的需求。如果想要一次性访问用户的所有订单，就放到一个大的聚合中，如果想要针对专门的一比订单处理，则划分为用户和订单两个聚合比较好。</p>
+<p><strong>聚合模型：</strong></p>
+<ul>
+<li>kv键值</li>
+<li>bson</li>
+<li>列族</li>
+<li>图形</li>
+</ul>
+<h1 id="四种nosql数据库"><a href="#四种nosql数据库" class="headerlink" title="四种nosql数据库"></a>四种nosql数据库</h1><p><em>1、kv键值</em></p>
+<ul>
+<li>临时性键值存储：Memcached，Redis</li>
+<li>永久性键值存储：ROMA，Redis </li>
+<li><strong>应用场景：</strong>内容缓存，主要用于处理大量数据的高访问负载，也用于一些日志系统等等</li>
+<li><strong>数据模型：</strong>Key指向Value的键值对，通常用HashTable来实现</li>
+<li><strong>优点：</strong>查找速度快</li>
+<li><strong>缺点：</strong>数据无结构化，通常只被当做字符串或者是二进制数据</li>
+</ul>
+<p><em>2、面向文档的数据库：MongoDB，CouchDB</em></p>
+<ul>
+<li><strong>特点：</strong>为web应用提供可扩展的高性能数据存储解决方案,是一个介于关系数据库和非关系数据库之间的产品，是非关系数据中功能最丰富，最像关系数据库的。</li>
+<li><strong>应用场景：</strong>WEB应用（与key-value类似，value是结构化的，不同的是数据库能够了解到value的内容）</li>
+<li><strong>数据模型：</strong>Key-Value对应的键值对，Value是结构化的数据</li>
+<li><strong>优点：</strong>数据结构要求不严格，表结构可变，不需要像关系型数据库一样需要预先定义表结构</li>
+<li><strong>缺点：</strong>查询性能不高，而且缺乏统一的查询语法</li>
+</ul>
+<p><em>3、面向列的数据库：Cassandra，HBase</em></p>
+<ul>
+<li><strong>应用场景：</strong>分布式的文件系统</li>
+<li><strong>数据模型：</strong>以列簇式存储，将一列数据存储在一起</li>
+<li><strong>优点：</strong>查找速度快，可扩展性强，更容易进行分布式扩展</li>
+<li><strong>缺点：</strong>功能相对局限</li>
+</ul>
+<p><em>4、面向图形的数据库：Neo4J，InfoGrid</em></p>
+<ul>
+<li><strong>应用场景：</strong>社交网络，推荐系统等，专注于构建关系图谱</li>
+<li><strong>数据模型：</strong>图结构</li>
+<li><strong>优点：</strong>利用图结构相关算法。比如最短路径寻址，N度关系查找等等。</li>
+<li><strong>缺点：</strong>很多时候要对整个图做计算才能得出需要的信息，而且这种结构不太好做分布式的集群方案。</li>
+</ul>
+
+      </div>
+        <div class="support-author">
+          <p>感谢您的阅读。 🙏
+          </p>
+        </div>
+        <!--
+            <div class="like ">
+              <div class="like-button">
+                <a id="like-note" href="">
+                  <i class="icon-heart"></i>喜欢
+                </a>
+              </div>
+              <span id="likes-count">256</span>
+            </div>
+        -->
+        <div class="otherLink">
+          <div class="previous">
+          </div>
+          <div class="next">
+          </div>
+        </div>
+        <div class="comments" id="comments">
+          
+<script src="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.min.js"></script>
+<script type="text/javascript">
+  const gitalk = new Gitalk({
+    clientID: '8888a8888',
+    clientSecret: '8888886666666',
+    repo: 'xxxx.github.io',
+    owner: 'admin',
+    admin: ['admin'],
+    id: location.pathname,      // Ensure uniqueness and length less than 50
+    distractionFreeMode: false
+  })
+
+  gitalk.render('comments');
+</script>
+
+
+        </div>
+      </div>
+    </div>
+   
+</main>
+<div class="footer">
+  <div class="info">
+    <p>
+    <a href="https://hexo.io"> Hexo </a> 强力驱动 |
+      <a href="https://github.com/Youthink/hexo-themes-yearn"> Yearn </a>
+      主题
+    </p>
+    <p>&copy;2013-2018 </p>
+  </div>
+</div>
+<script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+<script>//console
+  var consoleConfig = ''.split(',');
+  var canConsole = true;
+  var consoleInfo = (function(consoleConfig) {
+  if (!canConsole || !consoleConfig || consoleConfig.length < 1) {
+    return;
+  }
+  var consoleColor = '#6190e8';
+  var _console;
+  var backgroundTextStyle = 'padding: 1px 5px;color: #fff;background: ' + consoleColor + ';'
+  var textStyle = 'color: ' + consoleColor + ';';
+
+  consoleConfig.map(o => {
+    var num = (o.match(/%c/g) || []).length;
+    if(/^http(s)?:\/\//.test(o)) {
+      console.log('%c     ', 'background: url(' + o + ') no-repeat left center;font-size: 180px;');
+      return;
+    }
+    if (num > 0) {
+      var logArguments = [];
+      for (var i = 0; i < num; i++) {
+        if (i % 2 === 0) {
+          logArguments.push(backgroundTextStyle);
+        } else {
+          logArguments.push(textStyle);
+        }
+      }
+      (_console = console).log.apply(_console, ['%c' + o, textStyle].concat(logArguments));
+      return;
+    }
+    console.log('%c' + o, textStyle);
+  });
+}(consoleConfig));</script><script type="text/javascript" src="/./js/main.d9e3dd.js"></script>
+
+</body>
+</html>
