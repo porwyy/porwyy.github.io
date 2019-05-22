@@ -24,7 +24,7 @@
   <link rel="stylesheet" type="text/css" href="/./style/main.d9e3dd.css">
 	<link rel="shortcut icon" href="/favicon.ico" title="Favicon">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/gitalk@1/dist/gitalk.css">
-	<title>注册登录</title>
+	<title>vue中动态添加多个class</title>
   
   <script>var _hmt=_hmt||[];(function(){var hm=document.createElement("script");hm.src="https://hm.baidu.com/hm.js?awwssw1snsnsnn1ndndnndnd99j";var s=document.getElementsByTagName("script")[0];s.parentNode.insertBefore(hm,s);})();
   </script>
@@ -47,7 +47,7 @@
     
   
   <h1 class="title">
-    注册登录
+    vue中动态添加多个class
   </h1>
   
 
@@ -59,7 +59,7 @@
       </li>
       <li>
         
-    更新 <time datetime="2019-05-22T09:28:08.309Z" itemprop="dateUpdated">2019-05-22</time>
+    更新 <time datetime="2019-05-22T09:28:00.719Z" itemprop="dateUpdated">2019-05-22</time>
 
       </li>
       <li id="busuanzi_container_page_pv">
@@ -71,22 +71,48 @@
     <div class="article">
       <div class="content">
         
-        <h2 id="目录结构"><a href="#目录结构" class="headerlink" title="目录结构"></a>目录结构</h2><p><img src="./目录.png" alt="目录"></p>
-<p><a href="https://github.com/porwyy/signLogin.git" title="GitHub地址" target="_blank" rel="noopener">GitHub地址</a></p>
-<h1 id="各模块介绍"><a href="#各模块介绍" class="headerlink" title="各模块介绍"></a>各模块介绍</h1><h2 id="util"><a href="#util" class="headerlink" title="util"></a>util</h2><p>   这部分只有一个文件 DBUtil.java ，负责连接数据库。在此基础上，登录和注册部分只需要通过调用该对象的getConnection()方法既可以建立连接。如下：</p>
-<pre><code>Connection conn= DBUtil.getConnection();
-</code></pre><p><img src="./数据库连接.png" alt="数据库连接"></p>
-<p>   <strong>注：</strong>将图中的IP地址、用户名、密码换成你自己的。</p>
-<h2 id="entity"><a href="#entity" class="headerlink" title="entity"></a>entity</h2><p>   这部分只有一个文件，定义了一个用户类user，共3个属性（用户名，ID号，密码），以及他们各自的set、get方法。</p>
-<h2 id="check"><a href="#check" class="headerlink" title="check"></a>check</h2><p>   这部分只有一个文件 usercheck.java, 提供了用户查找和注册两个方法。</p>
-<p>   其中用户查找需要传递传递用户名参数，为string类型。该方法的返回值是一个user对象，需要在其他方法中在对该对象的密码进行核对。</p>
-<p>   注册这里，需要传入一个user对象。他会返回一个整型，告诉我们是否添加成功。</p>
-<h2 id="service"><a href="#service" class="headerlink" title="service"></a>service</h2><p>   这部分只有一个文件 loginservice.java ，为loginservlet提供登录服务支持。该类只提供了checkuser一个方法，其需要提供用户名和密码两个参数，他会调用usercheck里面的用户查找方法，然后进行比对，返回一个Boolean值。</p>
-<h2 id="servlet"><a href="#servlet" class="headerlink" title="servlet"></a>servlet</h2><p>这部分有两个文件addUserservlet、 loginservlet。</p>
-<p><strong>loginservlet</strong>：获得客户端传来的用户名和密码，调用loginservice对象的checkuser方法核对，将核对结果返回</p>
-<p><strong>adduserservlet</strong>：获得客户端传来的用户名和密码，调用userchecker 的adduser方法，将结果返回。</p>
-<h2 id="webcontent"><a href="#webcontent" class="headerlink" title="webcontent"></a>webcontent</h2><p>该目录下有两个登录和注册的测试页面（login.html 和 add.html）</p>
+        <h1 id="vue中动态添加多个class"><a href="#vue中动态添加多个class" class="headerlink" title="vue中动态添加多个class"></a>vue中动态添加多个class</h1><h2 id="方法一："><a href="#方法一：" class="headerlink" title="方法一："></a>方法一：</h2><pre><code>&lt;template&gt;
+    &lt;div :class=&quot;[(item[1]?&apos;toBlod &apos;:&apos;&apos;), (item[2]?&apos;toCen&apos;:&apos;&apos;)]&quot; v-for=&quot;(item,index) of card.intro&quot; :key=&quot;index&quot;&gt;
+        &lt;p&gt;{{item[0]}}&lt;/p&gt;
+    &lt;/div&gt;
+&lt;/template&gt;
+</code></pre><p><strong>注：</strong> 这里类名发生冲突时，会报错，这个坑踩了我好久….</p>
+<h2 id="方法二："><a href="#方法二：" class="headerlink" title="方法二："></a>方法二：</h2><pre><code>&lt;template&gt;
+  &lt;div id=&quot;app&quot;&gt;
+    &lt;div :class=&quot;[box,shadow]&quot;&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
 
+
+&lt;script&gt;
+export default {
+  name: &apos;app&apos;,
+  data () {
+    return {
+      box: &apos;yellow&apos;,
+      shadow:&apos;shadow&apos;
+    }
+  }
+}
+&lt;/script&gt;
+</code></pre><h2 id="方法三："><a href="#方法三：" class="headerlink" title="方法三："></a>方法三：</h2><pre><code>&lt;template&gt;
+  &lt;div id=&quot;app&quot;&gt;
+    &lt;div :class=&quot;{yellow:show1,shadow:show2}&quot;&gt;&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+    export default {
+      name: &apos;app&apos;,
+      data () {
+        return {
+          show1:true,
+          show2:false
+        }
+      }
+    }
+&lt;/script&gt;
+</code></pre>
       </div>
         <div class="support-author">
           <p>感谢您的阅读。 🙏
